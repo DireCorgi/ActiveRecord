@@ -32,6 +32,9 @@ class Farmer < SQLObject
 end
 
 class Farm < SQLObject
+  validates :name, :state, presence: true
+  validates :name, length: { minimum: 5, maximum: 24 }, uniqueness: true
+
   has_many :farmers
 
   finalize!

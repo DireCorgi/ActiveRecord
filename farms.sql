@@ -47,8 +47,8 @@ VALUES
   (1, "Pete", "Smith", 39, 1),
   (2, "Martha", "Smith", 36, 1),
   (3, "Josh", "Smith", 8, 1),
-  (4, "John", "Kar", 32, 2),
-  (5, "Peter", "Kar", 31, 2),
+  (4, "John", "Klar", 32, 2),
+  (5, "Peter", "Klar", 31, 2),
   (6, "Frank", "Ye", 32, 3),
   (7, "Harry", "Stine", 74, 4),
   (8, "Bill", "Wiggins", 26, NULL);

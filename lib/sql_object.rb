@@ -1,11 +1,14 @@
 require_relative 'db_connection'
 require_relative 'searchable'
 require_relative 'associatable'
+require_relative 'validator'
 require 'active_support/inflector'
 
 class SQLObject
   extend Searchable
   extend Associatable
+  extend Validation
+  include Valid
 
   def self.columns
     @cols ||= DBConnection.execute2(<<-SQL)
@@ -125,7 +128,7 @@ class SQLObject
     end
   end
 
-  def save
+  def save!
     id ? update : insert
   end
 
