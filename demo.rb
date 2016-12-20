@@ -10,12 +10,14 @@ DBConnection.open(DEMO_DB)
 
 class Chicken < SQLObject
   belongs_to :owner, class_name: 'Farmer'
+  has_one_through :farm, :owner, :farm
 
   finalize!
 end
 
 class Cow < SQLObject
   belongs_to :owner, class_name: 'Farmer'
+  has_one_through :farm, :owner, :farm
 
   finalize!
 end
