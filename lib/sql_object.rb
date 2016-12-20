@@ -1,15 +1,20 @@
 require_relative 'db_connection'
+require_relative 'searchable'
+require_relative 'associatable'
 require 'active_support/inflector'
 
 class SQLObject
 
+  extend Searchable
+  extend Associatable
+
   def self.columns
     @cols ||= DBConnection.execute2(<<-SQL)
-      SELECT
-        *
-      FROM
-        #{table_name}
-      LIMIT 1
+        SELECT
+          *
+        FROM
+          #{table_name}
+        LIMIT 1
       SQL
 
     @cols.first.map(&:to_sym)
@@ -51,7 +56,30 @@ class SQLObject
     results.map do |result|
       self.new(result)
     end
+  end
 
+  def self.first
+    data = DBConnection.execute(<<-SQL)
+      SELECT
+        #{table_name}.*
+      FROM
+        #{table_name}
+      LIMIT 1
+    SQL
+    data.empty? ? nil : self.new(data.first)
+  end
+
+  def self.last
+    data = DBConnection.execute(<<-SQL)
+      SELECT
+        #{table_name}.*
+      FROM
+        #{table_name}
+      ORDER BY
+        id DESC
+      LIMIT 1
+    SQL
+    data.empty? ? nil : self.new(data.first)
   end
 
   def self.find(id)
@@ -63,7 +91,21 @@ class SQLObject
       WHERE
         id = ?
     SQL
-    data.empty? ? nil : self.new(data.first)
+    parse_all(data)
+  end
+
+  def self.find_by(search_field)
+    search_col_name = search_field.keys.first.to_s
+    search_value = search_field.values.first
+    data = DBConnection.execute(<<-SQL, search_value)
+      SELECT
+        #{table_name}.*
+      FROM
+        #{table_name}
+      WHERE
+        #{search_col_name} = ?
+    SQL
+    parse_all(data)
   end
 
   def initialize(params = {})
@@ -94,10 +136,10 @@ class SQLObject
     col_names = self.class.columns.join(", ")
     questions_marks = (["?"] * self.class.columns.length).join(", ")
     DBConnection.execute(<<-SQL, *attribute_values)
-    INSERT INTO
-    #{self.class.table_name} (#{col_names})
-    VALUES
-    (#{questions_marks})
+      INSERT INTO
+        #{self.class.table_name} (#{col_names})
+      VALUES
+        (#{questions_marks})
     SQL
     self.id = DBConnection.last_insert_row_id
   end
@@ -105,12 +147,12 @@ class SQLObject
   def update
     col_names = self.class.columns.map{|name| "#{name} = ?"}.join(",")
     DBConnection.execute(<<-SQL, *attribute_values, self.id)
-    UPDATE
-    #{self.class.table_name}
-    SET
-    #{col_names}
-    WHERE
-    id = ?
+      UPDATE
+        #{self.class.table_name}
+      SET
+        #{col_names}
+      WHERE
+        id = ?
     SQL
   end
 
