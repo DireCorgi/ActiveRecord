@@ -4,7 +4,6 @@ require_relative 'associatable'
 require 'active_support/inflector'
 
 class SQLObject
-
   extend Searchable
   extend Associatable
 
@@ -155,6 +154,5 @@ class SQLObject
         id = ?
     SQL
   end
-
 
 end
