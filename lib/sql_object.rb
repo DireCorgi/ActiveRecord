@@ -18,7 +18,6 @@ class SQLObject
   def self.finalize!
     columns.each do |column_name|
 
-
       define_method(column_name) do
         attributes[column_name]
       end
@@ -85,31 +84,35 @@ class SQLObject
     end
   end
 
+  def save
+    id ? update : insert
+  end
+
+  private
+
   def insert
     col_names = self.class.columns.join(", ")
     questions_marks = (["?"] * self.class.columns.length).join(", ")
     DBConnection.execute(<<-SQL, *attribute_values)
-      INSERT INTO
-        #{self.class.table_name} (#{col_names})
-      VALUES
-        (#{questions_marks})
-      SQL
+    INSERT INTO
+    #{self.class.table_name} (#{col_names})
+    VALUES
+    (#{questions_marks})
+    SQL
     self.id = DBConnection.last_insert_row_id
   end
 
   def update
     col_names = self.class.columns.map{|name| "#{name} = ?"}.join(",")
     DBConnection.execute(<<-SQL, *attribute_values, self.id)
-      UPDATE
-        #{self.class.table_name}
-      SET
-        #{col_names}
-      WHERE
-        id = ?
+    UPDATE
+    #{self.class.table_name}
+    SET
+    #{col_names}
+    WHERE
+    id = ?
     SQL
   end
 
-  def save
-    id ? update : insert
-  end
+
 end
