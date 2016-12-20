@@ -1,8 +1,6 @@
-require_relative '03_associatable'
+require_relative 'associatable'
 
-# Phase IV
 module Associatable
-  # Remember to go back to 04_associatable to write ::assoc_options
 
   def has_one_through(name, through_name, source_name)
     define_method(name) do
@@ -33,12 +31,3 @@ module Associatable
     end
   end
 end
-
-# SELECT
-#   *.source_name
-# FROM
-#   through_name
-# JOIN
-#   source_name ON through_name.foreign_key = source_name.id
-# WHERE
-#   through_name.id = self.foreign_key
