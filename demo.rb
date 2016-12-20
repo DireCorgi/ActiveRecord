@@ -9,6 +9,8 @@ DEMO_SQL = 'farms.sql'
 DBConnection.open(DEMO_DB)
 
 class Chicken < SQLObject
+  validates :name, :color, presence: true
+
   belongs_to :owner, class_name: 'Farmer'
   has_one_through :farm, :owner, :farm
 
@@ -16,6 +18,8 @@ class Chicken < SQLObject
 end
 
 class Cow < SQLObject
+  validates :name, :color, presence: true
+
   belongs_to :owner, class_name: 'Farmer'
   has_one_through :farm, :owner, :farm
 
@@ -23,6 +27,8 @@ class Cow < SQLObject
 end
 
 class Farmer < SQLObject
+  validates :fname, :lname, :age, presence: true
+
   has_many :cows, foreign_key: :owner_id
   has_many :chickens, foreign_key: :owner_id
 

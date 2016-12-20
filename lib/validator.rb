@@ -103,4 +103,13 @@ module Valid
     object_errors
   end
 
+  def save
+    if self.valid?
+      save!
+      true
+    else
+      false
+    end
+  end
+
 end
