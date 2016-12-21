@@ -19,6 +19,7 @@ Hasty Archive includes numerous useful features and methods for database queryin
 - **::last**
 - **::find(id)**
 - **::find_by(search_field)**
+- **::where**
 - **::validates**
 - **::has_many**
 - **::belongs_to**
@@ -45,6 +46,13 @@ Find will only take an id field and will always return nil or a single SQLObject
 ```ruby
   Chicken.find(1)
   Chicken.find_by(name: "Josh")
+```
+
+#### Where
+Where can either take an options hash, or take a string with sql.
+```ruby
+Chicken.where(name: "Josh", owner_id: 3)
+Chicken.where("name = 'Josh' AND owner_id = 3")
 ```
 
 #### Validations
