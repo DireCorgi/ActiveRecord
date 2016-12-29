@@ -2,6 +2,8 @@
 Hasty Archive is an Object-relational mapping (ORM) built in ruby.
 Classes are mapped directly to database tables through their class name by inheriting from the SQLObject class, then calling the finalize! class method.
 
+To use Hasty Archive, create a class with the same name as the table you want to query from, but singular. For example, if you have a **chickens** table, you would create a **Chicken** class and inherit from SQLObject:
+
 ```ruby
 class Chicken < SQLObject
   finalize!
