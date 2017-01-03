@@ -93,7 +93,7 @@ class SQLObject
       WHERE
         id = ?
     SQL
-    parse_all(data)
+    parse_all(data)[0]
   end
 
   def self.find_by(search_field)
